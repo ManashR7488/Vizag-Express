@@ -4,4 +4,5 @@ dist/
 
 *.jpeg
 *.jpg
+!assets/og-image.jpg
 PROMPT.md

@@ -10,7 +10,7 @@
    `url` MUST be the real address the site is published at (with trailing /).
    -------------------------------------------------------------------------- */
 window.SITE = {
-  url: "https://vizag-express.netlify.app/",
+  url: "https://vizag-express.manash.in/",
   title: "Vizag Express | Bhubaneswar to Visakhapatnam Train Trip",
   description:
     "Seven friends, one train: the Vizag Express trip from Bhubaneswar to Visakhapatnam. Meet the crew, follow the East Coast route, Simhachalam Temple and more.",

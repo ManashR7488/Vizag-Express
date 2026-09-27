@@ -5,4 +5,4 @@ Allow: /
 Disallow: /tools/
 Disallow: /node_modules/
 
-Sitemap: https://vizag-express.netlify.app/sitemap.xml
+Sitemap: https://vizag-express.manash.in/sitemap.xml

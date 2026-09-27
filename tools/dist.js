@@ -28,6 +28,10 @@ const copy = (rel) => {
   bytes += fs.statSync(src).size;
 };
 INCLUDE.forEach(copy);
+// search-engine ownership files (Google Search Console / Bing) dropped in the project root
+fs.readdirSync(ROOT)
+  .filter((f) => /^google[0-9a-f]+\.html$|^BingSiteAuth\.xml$/.test(f))
+  .forEach(copy);
 
 fs.writeFileSync(
   path.join(OUT, "_headers"),

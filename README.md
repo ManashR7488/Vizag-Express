@@ -31,12 +31,8 @@ Drop them into `assets/members/` named by member id (`durga.jpg`, `manash.jpg`, 
 - **Roles / events / members:** edit the matching arrays.
 
 ## Publish it (and get it on Google)
-1. **Set the real address.** SEO tags, the sitemap and link previews need the site's final URL:
-   ```
-   node tools/seo.js https://your-site-address/
-   ```
-   (The default is `https://vizag-express.netlify.app/`. If you deploy to Netlify, name the site `vizag-express` and skip this.)
-2. **Build the deploy folder:** `npm run dist`, then drag the **`dist/`** folder onto https://app.netlify.com/drop (or connect the repo; `node_modules`, `dist` and `.claude` are git-ignored).
+1. **Site address** is set to `https://vizag-express.manash.in/` (change it with `node tools/seo.js https://new-address/`).
+2. **Deploys run on Vercel** (see `vercel.json`): every push to `main` is published automatically. Vercel copies the prebuilt site into `dist/`; it doesn't rebuild photos or CSS. So **run `npm run build` locally before you commit**, then `git push`.
 3. **Google Search Console** (https://search.google.com/search-console): add the site, copy the HTML-tag verification code into `SITE.googleVerification` in `js/data.js`, run `npm run dist` and redeploy, click Verify. Then **Sitemaps → submit `sitemap.xml`** and use **URL Inspection → Request indexing**.
 4. **Bing Webmaster Tools** (https://www.bing.com/webmasters): same idea with `SITE.bingVerification` (this also covers Yahoo and DuckDuckGo).
 5. **Check the previews:** paste the link into WhatsApp / https://www.opengraph.xyz, and test with https://search.google.com/test/rich-results and https://pagespeed.web.dev.

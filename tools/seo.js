@@ -55,6 +55,18 @@ const realStops = TRIP.stops.filter((s) => !s.scenic);
 const pad2 = (n) => String(n).padStart(2, "0");
 
 // member photos that actually exist (same lookup order as the site)
+// optimized WebP photos from js/photos.js: these are what gets deployed
+const PHOTOS = (() => {
+  try {
+    const box = { window: {} };
+    vm.runInNewContext(read("js/photos.js"), box);
+    return box.window.PHOTOS || {};
+  } catch {
+    return {};
+  }
+})();
+const publicPhoto = (m) => (PHOTOS[m.id] && fs.existsSync(file(PHOTOS[m.id])) ? PHOTOS[m.id] : null);
+
 const photoOf = (m) => {
   if (m.photo) return fs.existsSync(file(m.photo)) ? m.photo : null;
   for (const ext of ["jpg", "jpeg", "png", "webp"]) {
@@ -175,7 +187,7 @@ const graph = [
     url: URL_,
     logo: { "@type": "ImageObject", url: abs("assets/icons/icon-512.png"), width: 512, height: 512 },
     member: MEMBERS.map((m) => {
-      const photo = photoOf(m);
+      const photo = publicPhoto(m);
       return { "@type": "Person", name: m.name, jobTitle: rolesOf(m.id).join(", "), ...(photo && { image: abs(photo) }) };
     }),
   },
@@ -344,7 +356,7 @@ html = html.replace(/(<(\w+)[^>]*\sdata-bind="([\w.]+)"[^>]*>)([^<]*)(<\/\2>)/g,
 write("index.html", html);
 
 /* ----------------------------------------------------------- sitemap.xml */
-const images = [shareImg, ...MEMBERS.map(photoOf), ...PLACES.map((p) => p.image)].filter(Boolean);
+const images = [shareImg, ...MEMBERS.map(publicPhoto), ...PLACES.map((p) => p.image)].filter(Boolean);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
@@ -379,7 +391,7 @@ if (/vizag-express\.netlify\.app/.test(URL_)) warn.push(`SITE.url is still the d
 if (!shareImg) warn.push(`Share image ${SITE.shareImage} not found: link previews will have no picture.`);
 if (SITE.title.length > 60) warn.push(`Title is ${SITE.title.length} characters; Google shows about 60.`);
 if (SITE.description.length > 160) warn.push(`Description is ${SITE.description.length} characters; Google shows about 155–160.`);
-const missing = MEMBERS.filter((m) => !photoOf(m)).map((m) => m.nick);
+const missing = MEMBERS.filter((m) => !photoOf(m) && !publicPhoto(m)).map((m) => m.nick);
 try {
   const photosSrc = read("js/photos.js");
   const box = { window: {} };
