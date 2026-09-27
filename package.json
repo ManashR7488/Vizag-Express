@@ -1,0 +1,18 @@
+{
+  "name": "vizag-express",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vizag Express: a 3D trip website for seven friends travelling by train from Bhubaneswar to Visakhapatnam.",
+  "scripts": {
+    "build:css": "tailwindcss -i css/tailwind.input.css -o css/site.css --minify",
+    "watch:css": "tailwindcss -i css/tailwind.input.css -o css/site.css --watch",
+    "photos": "node tools/photos.js",
+    "seo": "node tools/seo.js",
+    "build": "npm run photos && npm run build:css && npm run seo",
+    "dist": "npm run build && node tools/dist.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.17"
+  }
+}

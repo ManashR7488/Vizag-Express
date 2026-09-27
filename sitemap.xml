@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://vizag-express.netlify.app/</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/og-image.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/durga.jpeg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/manash.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/ashish.jpeg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/amit.jpeg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/akash.jpeg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/somesh.jpeg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.netlify.app/assets/members/sandeep.jpeg</image:loc></image:image>
+  </url>
+</urlset>

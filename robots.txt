@@ -1,0 +1,8 @@
+# Vizag Express — everyone is welcome aboard.
+# CSS, JS and images stay crawlable so search engines can render the page.
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /node_modules/
+
+Sitemap: https://vizag-express.netlify.app/sitemap.xml
