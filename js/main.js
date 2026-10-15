@@ -9,7 +9,6 @@ const boot = () => {
   "use strict";
 
   const { TRIP, MEMBERS, ROLES, PLACES, EVENTS } = window;
-  const UPCOMING = window.UPCOMING_PLACE_SLOTS || 0;
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -123,7 +122,7 @@ const boot = () => {
     { n: MEMBERS.length, label: "Travellers", icon: "users" },
     { n: TRIP.distanceKm, pre: "~", post: " km", label: "On the rails", icon: "route" },
     { n: ROLES.length, label: "Crew teams", icon: "flag" },
-    { n: PLACES.length, label: PLACES.length === 1 ? "Place so far" : "Places so far", icon: "pin" },
+    { n: PLACES.length, label: "Places · 2 days", icon: "pin" },
     { n: EVENTS.length, label: "Activities", icon: "sparkles" },
   ];
   $("#stats").innerHTML = STATS.map(
@@ -524,123 +523,6 @@ const boot = () => {
     </div>`
   ).join("");
 
-  /* --------------------------------------------------------------- places */
-  const STARS = Array.from({ length: 26 }, (_, i) => {
-    const x = (i * 197) % 800;
-    const y = (i * 71) % 150;
-    return `<circle cx="${x}" cy="${y + 8}" r="${i % 4 === 0 ? 1.6 : 1}" fill="#fff" opacity="${0.35 + (i % 5) * 0.12}"/>`;
-  }).join("");
-
-  const FEATURES = {
-    temple: `
-      <g transform="translate(400 242)">
-        <circle r="95" cy="-60" fill="url(#glow)" opacity=".55"/>
-        <path fill="#120c26" d="M-62 0V-22h4c2-16 10-24 16-26 6 2 14 10 16 26h4V0Z"/>
-        <path fill="#120c26" d="M22 0V-20h42V0Zm-4-20 25-16 25 16Z"/>
-        <path fill="#140d2b" d="M-22 0v-38h5c1-32 7-54 13-66h8c6 12 12 34 13 66h5V0Z"/>
-        <ellipse cy="-106" rx="11" ry="4" fill="#140d2b"/>
-        <path fill="#140d2b" d="M-3-110 0-122 3-110Z"/>
-        <path stroke="#140d2b" stroke-width="1.5" d="M0-122v-16"/>
-        <path fill="#fb923c" d="M0-138 14-134 0-130Z"/>
-        <g fill="#ffcf7a">
-          <circle cx="-9" cy="-18" r="2"/><circle cx="9" cy="-18" r="2"/><circle cx="0" cy="-58" r="1.6"/>
-          <circle cx="34" cy="-9" r="1.6"/><circle cx="52" cy="-9" r="1.6"/><circle cx="-42" cy="-11" r="1.6"/>
-        </g>
-      </g>`,
-    city: `
-      <g fill="#140d2b" transform="translate(250 242)">
-        <rect x="0" y="-60" width="34" height="60"/><rect x="40" y="-96" width="28" height="96"/><rect x="74" y="-50" width="40" height="50"/>
-        <rect x="120" y="-120" width="30" height="120"/><rect x="156" y="-70" width="44" height="70"/><rect x="206" y="-88" width="26" height="88"/>
-        <rect x="238" y="-46" width="40" height="46"/>
-      </g>`,
-    beach: "",
-    hills: "",
-  };
-
-  const placeArt = (p) => {
-    if (p.image) {
-      return `<div class="layer" style="--depth:10"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy"></div>`;
-    }
-    const art = p.art || "temple";
-    const sea = art === "beach";
-    const svgOpen = `<svg viewBox="0 0 800 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">`;
-    return `
-      <div class="layer" style="--depth:3">${svgOpen}
-        <defs>
-          <linearGradient id="sky-${p.id}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#140f3a"/><stop offset=".55" stop-color="#7a2e5a"/><stop offset="1" stop-color="#ff9166"/>
-          </linearGradient>
-          <radialGradient id="glow"><stop offset="0" stop-color="#ffd29a"/><stop offset="1" stop-color="#ffd29a" stop-opacity="0"/></radialGradient>
-        </defs>
-        <rect width="800" height="320" fill="url(#sky-${p.id})"/>
-        ${STARS}
-        <circle cx="580" cy="205" r="130" fill="url(#glow)" opacity=".55"/>
-        <circle cx="580" cy="205" r="44" fill="#ffd9a3"/>
-        <path d="M150 90q8-7 16 0q8-7 16 0M205 70q6-5 12 0q6-5 12 0" stroke="#1b1236" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      </svg></div>
-      <div class="layer" style="--depth:7">${svgOpen}
-        <path fill="#5b2d63" d="M0 230c80-40 150-55 230-35 70 17 110-25 190-33 80-7 140 33 220 23 70-9 120 5 160 11v124H0Z"/>
-      </svg></div>
-      <div class="layer" style="--depth:13">${svgOpen}
-        ${
-          sea
-            ? `<path fill="#0e3a5a" d="M0 236h800v84H0Z"/><path stroke="#ffd29a" stroke-opacity=".5" stroke-width="3" fill="none" d="M520 250h120M540 262h80M500 275h160"/>
-               <path fill="#e2b77a" d="M0 285c150-18 300-22 450-12 150 10 260 20 350 16v31H0Z"/>`
-            : `<path fill="#2a1a48" d="M0 275c120-13 230-29 320-35 60-4 100-4 160 0 110 8 220 26 320 32v48H0Z"/>${FEATURES[art] || ""}`
-        }
-      </svg></div>
-      <div class="layer" style="--depth:22">${svgOpen}
-        <path fill="#0a0f24" d="M0 320v-36c40-5 70 5 100 16 30-10 60-2 90 20Zm620 0c40-24 100-32 180-38v38Z"/>
-        <g stroke="#0a0f24" stroke-linecap="round" fill="none">
-          <path stroke-width="7" d="M70 320c2-40 8-70 22-96"/>
-          <path stroke-width="5" d="M92 224c-20-12-38-8-52 6M92 224c-6-20-22-28-40-26M92 224c14-16 32-18 48-8M92 224c20-4 34 6 40 22M92 224c-2 16-12 26-24 30"/>
-          <path stroke-width="6" d="M740 320c-2-34-8-58-20-80"/>
-          <path stroke-width="4.5" d="M720 240c-18-10-34-6-46 6M720 240c-4-18-18-26-34-24M720 240c12-14 28-16 42-8M720 240c18-4 30 6 34 20"/>
-        </g>
-      </svg></div>`;
-  };
-
-  const placeCard = (p, i) => `
-    <div data-reveal class="${i === 0 ? "md:col-span-2" : ""}" style="--delay:${i * 90}ms">
-      <article class="tilt place-card" data-tilt="${i === 0 ? 5 : 8}">
-        <div class="place-art">
-          ${placeArt(p)}
-          <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-night-800 to-transparent"></div>
-          <span class="absolute left-5 top-5 rounded-full bg-night-950/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-amber-200 backdrop-blur">Stop ${String(i + 1).padStart(2, "0")}</span>
-        </div>
-        <div class="p3d p-6 sm:p-8">
-          <div class="z-pop-2">
-            ${p.subtitle ? `<p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">${esc(p.subtitle)}</p>` : ""}
-            <h3 class="mt-1 font-display text-3xl font-extrabold sm:text-4xl">${esc(p.name)}</h3>
-          </div>
-          <p class="z-pop-1 mt-3 max-w-2xl text-slate-300">${esc(p.description)}</p>
-          <div class="z-pop-1 mt-5 flex flex-wrap gap-2">${(p.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>
-          ${
-            p.tip
-              ? `<p class="z-pop-1 mt-5 flex items-start gap-2.5 rounded-2xl border border-amber-300/20 bg-amber-300/[0.07] p-3.5 text-sm text-amber-100"><span class="mt-px flex-none text-amber-300">${ICONS.bulb}</span>${esc(p.tip)}</p>`
-              : ""
-          }
-        </div>
-        <div class="glare"></div>
-      </article>
-    </div>`;
-
-  const soonCard = (i) => `
-    <div data-reveal style="--delay:${(PLACES.length + i) * 90}ms">
-      <article class="tilt place-card place-soon" data-tilt="10">
-        <div class="p3d p-8 text-center">
-          <div class="z-pop-3"><div class="soon-q">?</div></div>
-          <p class="z-pop-2 mt-4 font-display text-2xl font-extrabold">Stop ${String(PLACES.length + i + 1).padStart(2, "0")}</p>
-          <p class="z-pop-1 mt-2 text-sm text-slate-400">To be revealed — the Place team is scouting.</p>
-          <div class="z-pop-1 mt-6 flex justify-center -space-x-2">${avatarStack(placeTeam)}</div>
-        </div>
-        <div class="glare"></div>
-      </article>
-    </div>`;
-
-  $("#places-grid").innerHTML =
-    PLACES.map(placeCard).join("") + Array.from({ length: UPCOMING }, (_, i) => soonCard(i)).join("");
-
   /* --------------------------------------------------------------- events */
   $("#events-grid").innerHTML = EVENTS.map((e, i) => {
     const off = i - (EVENTS.length - 1) / 2;
@@ -711,10 +593,13 @@ const boot = () => {
 
   /* ----------------------------------------------------- hover sounds */
   $$(".role-card").forEach((el) => el.addEventListener("pointerenter", () => sfx("tick", { volume: 0.22, throttle: 120 })));
-  $$(".place-card").forEach((el) =>
-    el.addEventListener("pointerenter", () =>
-      el.classList.contains("place-soon") ? sfx("ping", { volume: 0.22, rate: 0.7, throttle: 400 }) : sfx("bell", { volume: 0.4, throttle: 6000 })
-    )
+  // place cards: each stop has its own sound (temple bells, a church chime, a ping for the rest)
+  const PLACE_SOUND = { temple: ["bell", 0.35, 6000], church: ["chime", 0.4, 3000] };
+  $$(".pcard").forEach((el) =>
+    el.addEventListener("pointerenter", () => {
+      const [name, volume, throttle] = PLACE_SOUND[el.dataset.place] || ["ping", 0.22, 300];
+      sfx(name, { volume, throttle, rate: name === "ping" ? 0.8 + Math.random() * 0.3 : 1 });
+    })
   );
   $("#ticket .ticket").addEventListener("click", () => sfx("stamp", { volume: 0.6, throttle: 250 }));
 
@@ -894,6 +779,9 @@ const boot = () => {
     onScroll();
     moveIndicator(activeLink());
   });
+
+  if (location.protocol === "file:")
+    $$('a[href^="places/"]').forEach((a) => a.setAttribute("href", a.getAttribute("href") + "index.html"));
 
   /* --------------------------------------------------------------- boot */
   hydrateIcons();

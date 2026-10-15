@@ -71,11 +71,13 @@
         done(checkOnMainThread());
       }
     });
+  // Let the page load and paint first: creating even a test WebGL context keeps the GPU process
+  // busy (for ~300 ms on software GL), which would hold back the page's first frame.
+  if (document.readyState !== "complete") await new Promise((r) => addEventListener("load", r, { once: true }));
+  await new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(r, { timeout: 1500 }) : setTimeout(r, 300)));
+
   const hasGpu = await detectGpu();
   if (!hasGpu && !/[?&]force3d\b/.test(location.search)) return fail("no hardware-accelerated WebGL; showing the poster");
-
-  // Let the page's text and images load first; the 3D scene then fades in over the hero poster.
-  if (document.readyState !== "complete") await new Promise((r) => addEventListener("load", r, { once: true }));
 
   let THREE;
   try {
@@ -679,7 +681,7 @@
       g.fillText("VIZAG EXPRESS", w / 2, 230);
       g.fillStyle = "#1f2b5c";
       g.font = "700 20px Outfit, 'Segoe UI', sans-serif";
-      g.fillText("BBS ⇄ VSKP", w / 2, 36);
+      g.fillText("BBSR ⇄ VSKP", w / 2, 36);
     };
     return { map: canvasTex(1024, 300, draw(false)), glow: canvasTex(1024, 300, draw(true)) };
   };

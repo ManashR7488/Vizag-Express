@@ -1,7 +1,7 @@
 /** Tailwind is compiled to css/tailwind.css (run `npm run build:css` after adding new classes). */
 module.exports = {
   // classes are also built inside the JS templates and the trip data
-  content: ["./index.html", "./404.html", "./js/**/*.js", "./tools/**/*.js"],
+  content: ["./index.html", "./404.html", "./places/**/*.html", "./js/**/*.js", "./tools/**/*.js"],
   theme: {
     extend: {
       fontFamily: {

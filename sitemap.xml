@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://vizag-express.manash.in/</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://vizag-express.manash.in/assets/og-image.jpg</image:loc></image:image>
@@ -14,5 +14,93 @@
     <image:image><image:loc>https://vizag-express.manash.in/assets/members/web/akash.webp</image:loc></image:image>
     <image:image><image:loc>https://vizag-express.manash.in/assets/members/web/somesh.webp</image:loc></image:image>
     <image:image><image:loc>https://vizag-express.manash.in/assets/members/web/sandeep.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/simhachalam-temple/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/simhachalam-temple/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/simhachalam-temple/gopuram-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/simhachalam-temple/gopuram-dusk-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/simhachalam-temple/temple-hills-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/simhachalam-temple/gopuram-night-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/ross-hill-church/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ross-hill-church/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ross-hill-church/church-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ross-hill-church/sunset-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ross-hill-church/port-view-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ross-hill-church/altar-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/rk-beach/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rk-beach/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rk-beach/sunrise-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rk-beach/beach-road-3200.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rk-beach/night-port-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rk-beach/afternoon-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/ins-kursura-submarine-museum/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ins-kursura-submarine-museum/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ins-kursura-submarine-museum/night-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ins-kursura-submarine-museum/utsav-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ins-kursura-submarine-museum/controls-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/ins-kursura-submarine-museum/gauges-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/kailasagiri/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/kailasagiri/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/kailasagiri/coastline-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/kailasagiri/shiva-parvati-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/kailasagiri/ropeway-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/kailasagiri/hill-park-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/tenneti-park/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/tenneti-park/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/tenneti-park/sunrise-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/tenneti-park/park-aerial-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/tenneti-park/sunrise-walk-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/tenneti-park/garden-sunrise-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/indira-gandhi-zoological-park/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/indira-gandhi-zoological-park/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/indira-gandhi-zoological-park/white-tiger-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/indira-gandhi-zoological-park/rhino-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/indira-gandhi-zoological-park/painted-storks-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/indira-gandhi-zoological-park/deer-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://vizag-express.manash.in/places/rushikonda-beach/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rushikonda-beach/og.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rushikonda-beach/bay-aerial-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rushikonda-beach/hill-reflection-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rushikonda-beach/sunrise-1600.webp</image:loc></image:image>
+    <image:image><image:loc>https://vizag-express.manash.in/assets/places/rushikonda-beach/crab-trails-1600.webp</image:loc></image:image>
   </url>
 </urlset>

@@ -11,7 +11,7 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "dist");
-const INCLUDE = ["index.html", "404.html", "robots.txt", "sitemap.xml", "site.webmanifest", "favicon.ico", "css/site.css", "js", "assets"];
+const INCLUDE = ["index.html", "404.html", "robots.txt", "sitemap.xml", "site.webmanifest", "favicon.ico", "css/site.css", "js", "assets", "places"];
 const SKIP = new Set(["README.txt"]);
 
 fs.rmSync(OUT, { recursive: true, force: true });

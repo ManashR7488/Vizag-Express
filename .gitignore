@@ -5,4 +5,5 @@ dist/
 *.jpeg
 *.jpg
 !assets/og-image.jpg
+!assets/places/*/og.jpg
 PROMPT.md

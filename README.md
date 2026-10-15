@@ -18,6 +18,7 @@ It optimizes photos, compiles the CSS and regenerates all the SEO files. Individ
 | Command | What it does |
 |---|---|
 | `npm run photos` | Makes small WebP versions of member photos (`assets/members/web/`) |
+| `npm run places` | Writes the themed page for every place (`places/<id>/`) and the photo credits |
 | `npm run build:css` | Compiles Tailwind + `css/style.css` into one minified `css/site.css` |
 | `npm run seo` | Regenerates the SEO `<head>`, structured data, crawlable content, FAQ, `sitemap.xml`, `robots.txt` |
 | `npm run dist` | Everything above + copies the deployable site into `dist/` |
@@ -25,9 +26,15 @@ It optimizes photos, compiles the CSS and regenerates all the SEO files. Individ
 ### Member photos
 Drop them into `assets/members/` named by member id (`durga.jpg`, `manash.jpg`, `ashish.jpg`, `amit.jpg`, `akash.jpg`, `somesh.jpg`, `sandeep.jpg`; `.jpeg/.png/.webp` work too), then run `npm run photos` (or `npm run build`). Originals are never modified.
 
+### Places (the 2-day itinerary)
+Each place in `PLACES` (`js/data.js`) gets a themed card on the home page and its own page at `places/<id>/`, with its own SEO tags, share image and structured data.
+- **Text:** `summary`, `details` (card bullets), `about`, `facts`, `highlights`, `tips`, `plan`. The facts come from Wikipedia and other sources credited at the bottom of each page.
+- **Look:** `theme` sets the design: `temple` (saffron arches + mandala), `church` (Gothic lancet windows), `promenade` (sunrise panorama), `naval` (blueprint + porthole + spec sheet), `summit` (full-bleed view + altimeter), `garden` (leaf-shaped photos), `safari` (jungle + paw trail), `surf` (sand, turquoise wave, tilted photos).
+- **Photos:** in `assets/places/<id>/` as `<name>-800.webp` / `-1600.webp` plus a 1200×630 `og.jpg`. All are from Wikimedia Commons under CC licences; credits are shown on each page and listed in `assets/places/CREDITS.md`. `card` picks which photo appears on the home card.
+- Run `npm run build` after editing (or `npm run places` for just the place pages).
+
 ### Trip details
 - **Tickets booked?** Set `date` (e.g. `"2026-12-20T21:30:00+05:30"`), `train` and `coach` in `js/data.js`. The ticket shows a live countdown, and the FAQ + structured data pick up the date.
-- **New place?** Add it to `PLACES` (examples are commented out there). Use `image` for a real photo, or `art: "temple" | "beach" | "hills" | "city"`.
 - **Roles / events / members:** edit the matching arrays.
 
 ## Publish it (and get it on Google)

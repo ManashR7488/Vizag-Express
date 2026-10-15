@@ -34,7 +34,8 @@ if (urlArg) {
 }
 const sandbox = { window: {} };
 vm.runInNewContext(dataSrc, sandbox, { filename: "data.js" });
-const { SITE, TRIP, MEMBERS, ROLES, PLACES, EVENTS } = sandbox.window;
+const { SITE, TRIP, MEMBERS, ROLES, PLACES, EVENTS, DAYS } = sandbox.window;
+const { homePlaces, pageUrl, imgSrc } = require("./place-templates");
 if (!SITE || !SITE.url) exit("window.SITE.url is missing in js/data.js");
 const URL_ = SITE.url.endsWith("/") ? SITE.url : SITE.url + "/";
 const abs = (p) => (/^https?:/.test(p) ? p : URL_ + p.replace(/^\.?\//, ""));
@@ -117,10 +118,13 @@ const faqs = [
       ? `The train leaves ${TRIP.from.city} on ${tripDate.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}${TRIP.train !== "TBA" ? ` on train ${TRIP.train}` : ""}.`
       : `The date and train will be announced once tickets are booked. The boarding pass on this site then shows a live countdown.`,
   },
-  ...PLACES.map((p) => ({
-    q: `What is ${p.name}?`,
-    a: `${p.name}${p.subtitle ? ` (${p.subtitle})` : ""}: ${p.description}${p.tip ? ` Tip: ${p.tip}` : ""}`,
-  })),
+  {
+    q: `Which places will the crew visit in ${TRIP.to.city}?`,
+    a: [1, 2]
+      .map((d) => `Day ${d}: ${list(PLACES.filter((p) => p.day === d).map((p) => p.name + (p.main ? " (main stop)" : "")))}.`)
+      .join(" "),
+  },
+  ...PLACES.filter((p) => p.main).map((p) => ({ q: `What is ${p.name}?`, a: `${p.summary} ${p.about[0]}` })),
   {
     q: `Who is travelling on ${TRIP.name}?`,
     a: `The crew is ${list(MEMBERS.map((m) => m.name))}.`,
@@ -144,7 +148,6 @@ const station = (s) => ({
   name: `${s.city} (${s.code})`,
   address: { "@type": "PostalAddress", addressLocality: s.city, addressRegion: s.state, addressCountry: "IN" },
 });
-const placeType = { temple: "HinduTemple", beach: "Beach", hills: "TouristAttraction", city: "TouristAttraction" };
 
 const graph = [
   {
@@ -209,11 +212,13 @@ const graph = [
         "@type": "ListItem",
         position: i + 1,
         item: {
-          "@type": placeType[p.art] || "TouristAttraction",
+          "@type": p.type,
+          "@id": URL_ + pageUrl(p) + "#place",
           name: p.name,
-          ...(p.subtitle && { alternateName: p.subtitle }),
-          description: p.description,
-          ...(p.image && { image: abs(p.image) }),
+          alternateName: p.subtitle,
+          description: p.summary,
+          url: URL_ + pageUrl(p),
+          image: URL_ + imgSrc("", p, p.images[0], p.images[0].widths[1]),
           address: { "@type": "PostalAddress", addressLocality: TRIP.to.city, addressRegion: TRIP.to.state, addressCountry: "IN" },
         },
       })),
@@ -280,7 +285,7 @@ const stats = [
   [MEMBERS.length, "Travellers"],
   [`~${TRIP.distanceKm} km`, "On the rails"],
   [ROLES.length, "Crew teams"],
-  [PLACES.length, PLACES.length === 1 ? "Place so far" : "Places so far"],
+  [PLACES.length, "Places · 2 days"],
   [EVENTS.length, "Activities"],
 ]
   .map(([n, l]) => `<div class="stat"><span class="block h-5" aria-hidden="true"></span><p class="mt-3 whitespace-nowrap font-display text-3xl font-extrabold sm:text-2xl md:text-3xl lg:text-4xl">${esc(n)}</p><p class="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">${esc(l)}</p></div>`)
@@ -306,12 +311,7 @@ const roles = ROLES.map(
       .join("")}</ul></article></div>`
 ).join("");
 
-const places = PLACES.map(
-  (p) =>
-    `<article class="place-card p-7">${p.subtitle ? `<p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">${esc(p.subtitle)}</p>` : ""}<h3 class="mt-1 font-display text-3xl font-extrabold">${esc(p.name)}</h3><p class="mt-3 text-slate-300">${esc(p.description)}</p>${
-      p.tip ? `<p class="mt-3 text-sm text-amber-100">Tip: ${esc(p.tip)}</p>` : ""
-    }</article>`
-).join("");
+const places = homePlaces(PLACES, DAYS);
 
 const events = EVENTS.map(
   (e) =>
@@ -356,17 +356,21 @@ html = html.replace(/(<(\w+)[^>]*\sdata-bind="([\w.]+)"[^>]*>)([^<]*)(<\/\2>)/g,
 write("index.html", html);
 
 /* ----------------------------------------------------------- sitemap.xml */
-const images = [shareImg, ...MEMBERS.map(publicPhoto), ...PLACES.map((p) => p.image)].filter(Boolean);
+const images = [shareImg, ...MEMBERS.map(publicPhoto)].filter(Boolean);
+const urlEntry = (loc, imgs, freq, prio) => `  <url>
+    <loc>${esc(loc)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${freq}</changefreq>
+    <priority>${prio}</priority>
+${imgs.map((p) => `    <image:image><image:loc>${esc(abs(p))}</image:loc></image:image>`).join("\n")}
+  </url>`;
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url>
-    <loc>${esc(URL_)}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-${images.map((p) => `    <image:image><image:loc>${esc(abs(p))}</image:loc></image:image>`).join("\n")}
-  </url>
+${[
+  urlEntry(URL_, images, "weekly", "1.0"),
+  ...PLACES.map((p) => urlEntry(URL_ + pageUrl(p), [`assets/places/${p.id}/og.jpg`, ...p.images.map((im) => imgSrc("", p, im, im.widths[1]))], "monthly", "0.8")),
+].join("\n")}
 </urlset>
 `;
 write("sitemap.xml", sitemap);
@@ -404,6 +408,6 @@ try {
 if (missing.length) warn.push(`No photo yet for: ${missing.join(", ")}.`);
 
 console.log(`✓ index.html  <head> SEO block, JSON-LD (${graph.length} entities), crawlable content, ${faqs.length} FAQs`);
-console.log(`✓ sitemap.xml  1 page, ${images.length} images, lastmod ${today}`);
+console.log(`✓ sitemap.xml  ${PLACES.length + 1} pages, ${images.length + PLACES.reduce((n, p) => n + p.images.length + 1, 0)} images, lastmod ${today}`);
 console.log(`✓ robots.txt`);
 warn.forEach((w) => console.log("! " + w));
