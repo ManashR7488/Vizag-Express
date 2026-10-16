@@ -127,9 +127,37 @@ window.ROLES = [
    Photos live in assets/places/<id>/ (freely licensed, from Wikimedia Commons;
    the credits below are shown on each page).
    -------------------------------------------------------------------------- */
+// The timeline. `place` links a slot to a place page (its id); other slots are
+// meals, travel and rest. status: "confirmed" | "tentative".
 window.DAYS = {
-  1: { title: "Temples & the seafront", blurb: "A hilltop temple, a hilltop chapel, the city beach and a real submarine." },
-  2: { title: "Hills, gardens & the Blue Flag beach", blurb: "Ropeway views, seaside gardens, a forest zoo and the golden sands of Rushikonda." },
+  1: {
+    title: "Temples & the seafront",
+    blurb: "A hilltop temple, a hilltop chapel, the city beach and a real submarine.",
+    status: "confirmed",
+    statusLabel: "Confirmed",
+    schedule: [
+      { time: "5:30 AM", kind: "arrive", what: "Arrival at Visakhapatnam Junction (VSKP)" },
+      { time: "6:00 – 10:30 AM", place: "simhachalam-temple" },
+      { time: "11:30 AM – 1:00 PM", place: "ross-hill-church" },
+      { time: "1:00 – 2:00 PM", kind: "meal", what: "Lunch" },
+      { time: "4:00 – 6:30 PM", place: "rk-beach" },
+      { time: "6:30 – 7:45 PM", place: "ins-kursura-submarine-museum" },
+      { time: "8:00 – 9:00 PM", kind: "meal", what: "Dinner", note: "Street food, seafood and local favourites" },
+      { time: "9:00 PM onwards", kind: "stay", what: "Check in and rest" },
+    ],
+  },
+  2: {
+    title: "Hills, gardens & the Blue Flag beach",
+    blurb: "Ropeway views, seaside gardens and the golden sands of Rushikonda.",
+    status: "tentative",
+    statusLabel: "Confirmed · may shift if Day 1 runs late",
+    schedule: [
+      { time: "8:00 AM – 12:00 PM", place: "kailasagiri", note: "Ropeway cable car · Glass skybridge" },
+      { time: "12:15 – 1:20 PM", place: "tenneti-park" },
+      { time: "1:20 – 2:30 PM", kind: "meal", what: "Lunch" },
+      { time: "3:00 – 6:30 PM", place: "rushikonda-beach" },
+    ],
+  },
 };
 
 window.PLACES = [
@@ -463,9 +491,9 @@ window.PLACES = [
     tips: [
       "The interior is narrow, with low hatches: watch your head.",
       "Entry is ticketed; check opening days and times before you go.",
-      "Visit before sunset, then stay for the promenade.",
+      "We arrive around 6:30 PM: check the closing time on the day.",
     ],
-    plan: "Next door to RK Beach: a walk through the submarine before the evening on the promenade.",
+    plan: "Straight from the beach at 6:30 PM: a walk through the submarine as Beach Road lights up, then dinner.",
     map: "INS Kursura Submarine Museum, Visakhapatnam",
     coords: [17.7175, 83.32944444],
     images: [
@@ -757,7 +785,7 @@ window.PLACES = [
       "It's huge: start early and wear walking shoes.",
       "Carry water; the trails are long and the afternoons warm.",
     ],
-    plan: "The longest walk of the trip: forest trails past the big cats, and the photography team's long-lens challenge.",
+    plan: "Not in the timeline yet: a bonus stop if Day 2 runs ahead of schedule, or one for the next trip.",
     map: "Indira Gandhi Zoological Park, Visakhapatnam",
     coords: [17.7691, 83.35],
     images: [

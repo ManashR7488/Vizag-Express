@@ -9,7 +9,7 @@
 const { fs, file, loadData, siteUrl, today } = require("./lib");
 const { placePage, pageUrl, imgSrc } = require("./place-templates");
 
-const { SITE, TRIP, PLACES } = loadData();
+const { SITE, TRIP, PLACES, DAYS } = loadData();
 const URL_ = siteUrl(SITE);
 
 // where the facts on each page come from (shown in the page footer)
@@ -70,7 +70,7 @@ for (const p of PLACES) {
   };
   const dir = file("places", p.id);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(file("places", p.id, "index.html"), placePage({ SITE, TRIP, PLACES, URL_, p, jsonLd, sources: SOURCES[p.id] || [] }));
+  fs.writeFileSync(file("places", p.id, "index.html"), placePage({ SITE, TRIP, PLACES, DAYS, URL_, p, jsonLd, sources: SOURCES[p.id] || [] }));
   for (const im of p.images)
     for (const w of im.widths)
       if (!fs.existsSync(file("assets/places", p.id, `${im.file}-${w}.webp`))) console.warn(`! missing image assets/places/${p.id}/${im.file}-${w}.webp`);

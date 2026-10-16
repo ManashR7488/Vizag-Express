@@ -119,9 +119,14 @@ const faqs = [
       : `The date and train will be announced once tickets are booked. The boarding pass on this site then shows a live countdown.`,
   },
   {
-    q: `Which places will the crew visit in ${TRIP.to.city}?`,
+    q: `What is the ${TRIP.name} itinerary in ${TRIP.to.city}?`,
     a: [1, 2]
-      .map((d) => `Day ${d}: ${list(PLACES.filter((p) => p.day === d).map((p) => p.name + (p.main ? " (main stop)" : "")))}.`)
+      .map(
+        (d) =>
+          `Day ${d} (${DAYS[d].statusLabel.toLowerCase()}): ` +
+          DAYS[d].schedule.map((s) => `${s.time} ${s.place ? PLACES.find((p) => p.id === s.place).name : s.what}`).join("; ") +
+          "."
+      )
       .join(" "),
   },
   ...PLACES.filter((p) => p.main).map((p) => ({ q: `What is ${p.name}?`, a: `${p.summary} ${p.about[0]}` })),

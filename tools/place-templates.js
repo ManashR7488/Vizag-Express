@@ -23,6 +23,42 @@ const img = (prefix, p, im, { sizes, eager = false, big = false } = {}) =>
 const byFile = (p, name) => p.images.find((i) => i.file === name) || p.images[0];
 const stopNo = (PLACES, p) => PLACES.indexOf(p) + 1;
 
+/** the timeline slot of a place: { day, time, note, status } or null if unscheduled */
+const slotOf = (DAYS, p) => {
+  for (const [d, day] of Object.entries(DAYS || {})) {
+    const s = (day.schedule || []).find((x) => x.place === p.id);
+    if (s) return { day: +d, time: s.time, note: s.note, status: day.status };
+  }
+  return null;
+};
+
+const KIND_ICON = {
+  arrive: '<path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/>',
+  meal: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  stay: '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+  place: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+};
+const kindIcon = (k) =>
+  `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${KIND_ICON[k] || KIND_ICON.place}</svg>`;
+
+/** the day's schedule board */
+const timeline = (PLACES, day) => `
+            <ol class="tl" aria-label="Timeline" style="--rows:${Math.ceil(day.schedule.length / 2)}">${day.schedule
+              .map((s) => {
+                const p = s.place && PLACES.find((x) => x.id === s.place);
+                const what = p
+                  ? `<a class="tl-what" href="${pageUrl(p)}">${esc(p.name)}</a>`
+                  : `<span class="tl-what">${esc(s.what)}</span>`;
+                return `
+              <li class="tl-row tl-${p ? "place theme-" + p.theme : s.kind}">
+                <span class="tl-time">${esc(s.time)}</span>
+                <span class="tl-dot">${kindIcon(p ? "place" : s.kind)}</span>
+                <span class="tl-body">${what}${p && p.main ? ' <span class="tl-star" title="Main stop">★</span>' : ""}${s.note ? `<span class="tl-note">${esc(s.note)}</span>` : ""}</span>
+              </li>`;
+              })
+              .join("")}
+            </ol>`;
+
 /* ------------------------------------------------------------------ home */
 const homePlaces = (PLACES, DAYS) =>
   `<div class="days">${[1, 2]
@@ -33,16 +69,20 @@ const homePlaces = (PLACES, DAYS) =>
             <div class="day-head" data-reveal>
               <span class="day-badge">Day ${d}</span>
               <h3 id="day-${d}-title" class="day-title">${esc(DAYS[d].title)}</h3>
+              <span class="day-status is-${DAYS[d].status}">${esc(DAYS[d].statusLabel)}</span>
               <p class="day-blurb">${esc(DAYS[d].blurb)}</p>
             </div>
+            <div data-reveal>${timeline(PLACES, DAYS[d])}</div>
             <ol class="day-track">${list
-              .map(
-                (p, k) => `
+              .map((p, k) => {
+                const slot = slotOf(DAYS, p);
+                return `
               <li data-reveal style="--delay:${k * 90}ms">
                 <a class="pcard tilt theme-${p.theme}" href="${pageUrl(p)}" data-tilt="6" data-place="${p.theme}">
-                  <span class="pcard-stop">Stop ${pad2(stopNo(PLACES, p))}</span>${p.main ? '<span class="pcard-main">★ Main stop</span>' : ""}
+                  <span class="pcard-stop">Stop ${pad2(stopNo(PLACES, p))}</span>${p.main ? '<span class="pcard-main">★ Main stop</span>' : ""}${slot ? "" : '<span class="pcard-main is-optional">Optional</span>'}
                   <span class="shape">${img("", p, byFile(p, p.card), { sizes: "(min-width: 1100px) 22vw, (min-width: 640px) 45vw, 90vw" })}</span>
                   <div class="pcard-body">
+                    <span class="pcard-time">${slot ? `🕒 ${esc(slot.time)}` : "Not in the timeline · if time allows"}</span>
                     <span class="pcard-kicker">${esc(p.kicker)}</span>
                     <h4 class="pcard-name">${esc(p.name)}</h4>
                     <ul class="pcard-details">${p.details.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
@@ -50,8 +90,8 @@ const homePlaces = (PLACES, DAYS) =>
                   </div>
                   <span class="glare"></span>
                 </a>
-              </li>`
-              )
+              </li>`;
+              })
               .join("")}
             </ol>
           </section>`;
@@ -72,8 +112,9 @@ const JUNGLE = (style) =>
   `<svg class="jungle" style="${style}" viewBox="0 0 120 120" fill="currentColor" aria-hidden="true"><path d="M60 118C58 80 40 60 8 54c26-6 44 6 52 30 0-30-10-52-30-70 26 6 40 30 36 62 6-26 22-44 48-50-18 14-30 36-30 64 10-16 22-24 36-24-16 10-26 26-28 52Z"/></svg>`;
 const PAW = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><ellipse cx="12" cy="16" rx="5" ry="4.2"/><circle cx="5.5" cy="10" r="2.2"/><circle cx="9.5" cy="6" r="2.2"/><circle cx="14.5" cy="6" r="2.2"/><circle cx="18.5" cy="10" r="2.2"/></svg>`;
 
-const intro = (PLACES, p, { center = false } = {}) => `
+const intro = (PLACES, p, { center = false } = {}, slot) => `
         <p class="p-kicker">Day ${p.day} · Stop ${pad2(stopNo(PLACES, p))} · ${esc(p.kicker)}${p.main ? ' <span class="pcard-main">★ Main stop</span>' : ""}</p>
+        <p class="p-when">${slot ? `🕒 Day ${slot.day} · ${esc(slot.time)}${slot.status === "tentative" ? ' <span class="p-when-note">may shift</span>' : ""}` : "Optional stop · not in the timeline yet"}</p>
         <h1 class="p-title">${esc(p.name)}</h1>
         <p class="p-aka">${esc(p.subtitle)}</p>
         <p class="p-sub">${esc(p.summary)}</p>
@@ -81,15 +122,15 @@ const intro = (PLACES, p, { center = false } = {}) => `
 
 const NAVAL_SPEC = ["Length", "Beam", "Displacement", "Crew", "Top speed", "Diving depth", "Torpedo tubes"];
 
-const hero = (PLACES, p, X) => {
+const hero = (PLACES, p, X, slot) => {
   const im = (name, opts) => img(X, p, byFile(p, name), opts);
   switch (p.theme) {
     case "temple":
-      return `<section class="p-hero hero-temple"><div class="p-wrap">${intro(PLACES, p, { center: true })}
+      return `<section class="p-hero hero-temple"><div class="p-wrap">${intro(PLACES, p, { center: true }, slot)}
         <div class="temple-stage">${MANDALA}<div class="shape">${im("gopuram", { sizes: "(min-width: 640px) 368px, 78vw", eager: true, big: true })}</div></div>
       </div></section>`;
     case "church":
-      return `<section class="p-hero hero-church"><div class="p-wrap">${intro(PLACES, p, { center: true })}
+      return `<section class="p-hero hero-church"><div class="p-wrap">${intro(PLACES, p, { center: true }, slot)}
         <div class="triptych">
           <div class="shape">${im("sunset", { sizes: "(min-width: 832px) 220px, 26vw" })}</div>
           <div class="shape is-center">${im("church", { sizes: "(min-width: 832px) 300px, 36vw", eager: true })}</div>
@@ -97,13 +138,13 @@ const hero = (PLACES, p, X) => {
         </div>
       </div></section>`;
     case "promenade":
-      return `<section class="p-hero hero-promenade"><div class="p-wrap">${intro(PLACES, p)}</div>
+      return `<section class="p-hero hero-promenade"><div class="p-wrap">${intro(PLACES, p, {}, slot)}</div>
         <div class="pano" tabindex="0" aria-label="Panorama of Beach Road: scroll sideways">${im("beach-road", { sizes: "(min-width: 768px) 2100px, 1150px", eager: true, big: true })}<span class="pano-hint">Swipe along the promenade →</span></div>
         <svg class="wave-edge" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 34c160-30 320-30 480 0s320 30 480 0 320-30 480 0V60H0Z"/></svg>
       </section>`;
     case "naval":
       return `<section class="p-hero hero-naval"><div class="p-wrap">
-        <div><p class="stencil" aria-hidden="true">S20</p>${intro(PLACES, p)}
+        <div><p class="stencil" aria-hidden="true">S20</p>${intro(PLACES, p, {}, slot)}
           <dl class="spec">${p.facts
             .filter(([k]) => NAVAL_SPEC.includes(k))
             .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
@@ -115,11 +156,11 @@ const hero = (PLACES, p, X) => {
       return `<section class="p-hero hero-summit">
         <div class="summit-bg">${im("coastline", { sizes: "100vw", eager: true, big: true })}</div>
         <div class="altimeter" aria-hidden="true"><span class="alt-top">▲ 173 m · summit</span><span class="alt-sea">0 m · sea</span></div>
-        <div class="p-wrap">${intro(PLACES, p)}</div>
+        <div class="p-wrap">${intro(PLACES, p, {}, slot)}</div>
       </section>`;
     case "garden":
       return `<section class="p-hero hero-garden"><div class="p-wrap">
-        <div>${intro(PLACES, p)}</div>
+        <div>${intro(PLACES, p, {}, slot)}</div>
         <div class="leaves">
           <div class="shape">${im("sunrise", { sizes: "(min-width: 900px) 440px, 70vw", eager: true })}</div>
           <div class="shape">${im("park-aerial", { sizes: "(min-width: 900px) 240px, 40vw" })}</div>
@@ -129,24 +170,25 @@ const hero = (PLACES, p, X) => {
       </div></section>`;
     case "safari":
       return `<section class="p-hero hero-safari">${JUNGLE("width:14rem;left:-3rem;top:5rem;transform:rotate(25deg)")}${JUNGLE("width:18rem;right:-4rem;bottom:-4rem;transform:rotate(-30deg)")}<div class="p-wrap">
-        <div>${intro(PLACES, p)}<div class="paws" aria-hidden="true">${PAW.repeat(6)}</div></div>
+        <div>${intro(PLACES, p, {}, slot)}<div class="paws" aria-hidden="true">${PAW.repeat(6)}</div></div>
         <div class="shape">${im("white-tiger", { sizes: "(min-width: 900px) 560px, 90vw", eager: true, big: true })}</div>
       </div></section>`;
     case "surf":
       return `<section class="p-hero hero-surf"><div class="p-wrap">
-        <div>${intro(PLACES, p)}<span class="blue-flag">${ICON.flag} Blue Flag certified beach</span></div>
+        <div>${intro(PLACES, p, {}, slot)}<span class="blue-flag">${ICON.flag} Blue Flag certified beach</span></div>
         <div class="boards">
           <div class="shape">${im("bay-aerial", { sizes: "(min-width: 900px) 520px, 80vw", eager: true, big: true })}</div>
           <div class="shape">${im("hill-reflection", { sizes: "(min-width: 900px) 260px, 40vw" })}</div>
         </div>
       </div></section>`;
     default:
-      return `<section class="p-hero"><div class="p-wrap">${intro(PLACES, p)}</div></section>`;
+      return `<section class="p-hero"><div class="p-wrap">${intro(PLACES, p, {}, slot)}</div></section>`;
   }
 };
 
 /* ------------------------------------------------------------- full page */
-const placePage = ({ SITE, TRIP, PLACES, URL_, p, jsonLd, sources }) => {
+const placePage = ({ SITE, TRIP, PLACES, DAYS, URL_, p, jsonLd, sources }) => {
+  const slot = slotOf(DAYS, p);
   const X = "../../";
   const i = PLACES.indexOf(p);
   const prev = PLACES[i - 1];
@@ -215,7 +257,7 @@ ${JSON.stringify(jsonLd, null, 2).replace(/</g, "\\u003c").replace(/^/gm, "    "
     </header>
 
     <main id="main">
-      ${hero(PLACES, p, X)}
+      ${hero(PLACES, p, X, slot)}
 
       <section class="p-section" aria-labelledby="about-title">
         <div class="p-wrap p-intro">
@@ -260,6 +302,7 @@ ${JSON.stringify(jsonLd, null, 2).replace(/</g, "\\u003c").replace(/^/gm, "    "
           <div class="p-plan" data-reveal>
             <div>
               <p class="p-kicker" id="plan-title">Crew plan · Day ${p.day} · Stop ${stopNo(PLACES, p)} of ${PLACES.length}</p>
+              <p class="p-plan-time">${slot ? `${esc(slot.time)}${slot.note ? ` · ${esc(slot.note)}` : ""}${slot.status === "tentative" ? " · Day 2 times may shift" : ""}` : "Not in the timeline yet: we'll fit it in if there's time."}</p>
               <p class="p-plan-quote">${esc(p.plan)}</p>
               <a class="p-btn" href="${esc(maps)}" target="_blank" rel="noopener">Open in Google Maps ${ICON.pin}</a>
             </div>
@@ -301,4 +344,4 @@ ${JSON.stringify(jsonLd, null, 2).replace(/</g, "\\u003c").replace(/^/gm, "    "
 `;
 };
 
-module.exports = { homePlaces, placePage, pageUrl, imgSrc, THEME_BG };
+module.exports = { homePlaces, placePage, pageUrl, imgSrc, slotOf, THEME_BG };
